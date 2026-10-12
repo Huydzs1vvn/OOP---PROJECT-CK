@@ -80,3 +80,13 @@ polymorphically without checking                    -Question
 concrete question types.                            -GradeResult
 -Collect individual question results 
 and calculate the total score.	
+
+*Syllapus Mapping This project requires applying several key OOP concepts from our syllabus to ensure a sound and extensible design. The mappings between the syllabus topics and our project implementation are as follows:
+
+Abstract Classes & Polymorphism: This is the core of our auto-grading system. We applied this by creating an abstract Question class with an abstract grade() method. Subclasses like MultipleChoice and TrueFalse implement their own grading logic. This allows the QuizGrader to evaluate an entire quiz polymorphically without using if/else checks for question types.
+
+Encapsulation (State Management): We utilized encapsulation primarily in the Attempt class. It restricts external modification of critical attributes like the timeLimit and the current AttemptState (IN_PROGRESS, EXPIRED, SUBMITTED). This ensures the system strictly enforces server-side time limits.
+
+Object-Oriented Design Principles (SOLID): Our design heavily relies on the Open/Closed Principle. By decoupling the grading logic into specific question subclasses, we can add new question types in the future without modifying existing classes like QuizGrader or Attempt.
+
+Collections: We applied collections (e.g., Lists/Vectors) to manage the structure of a Quiz (which holds a list of Question objects) and to maintain the randomized questionOrder specific to each Attempt.
