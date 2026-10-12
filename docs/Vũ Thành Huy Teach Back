@@ -1,1 +1,10 @@
+In our design, we strategically employed both inheritance and composition to build a flexible system.
 
+Inheritance: We used inheritance for the Question hierarchy (MultipleChoice, TrueFalse, ShortAnswer inheriting from the abstract Question class). This "IS-A" relationship is essential because it allows us to utilize polymorphism. By defining an abstract grade() method in the base class, the QuizGrader can evaluate any question type without needing to know its specific subclass, cleanly satisfying the Open/Closed principle.
+Composition: We utilized composition for the relationship between Quiz and Question. A Quiz "has-a" collection of questions. We chose composition over inheritance here because a Quiz is not a type of Question; rather, it acts as a container. This separation of concerns keeps our classes focused on their specific responsibilities.
+
+To successfully implement this project, we will apply the following concepts from our syllabus:
+
+Polymorphism & Abstract Classes: Crucial for implementing the grade() method across different question types without branching logic.
+Encapsulation: Necessary for managing the state of an Attempt (ensuring the time limit cannot be tampered with from the outside). This is exactly what I verified in Test Case 2 of our Test Plan
+Collections: Required for storing the list of questions within a Quiz and managing the questionOrder within an Attempt.
