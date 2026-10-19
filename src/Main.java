@@ -29,29 +29,21 @@ public class Main {
             // 2. Tạo Quiz (Kha)
             Quiz quiz = new Quiz("QUIZ_01", "Bài test cơ bản", 60, Arrays.asList(q1, q2, q3));
             
-            // 3. Tạo Attempt và Bắt đầu làm bài (Kha)
-            Map<String, String> answers = new HashMap<>();
-            Attempt attempt = new Attempt(null, null, null, quiz.getQuestions(), answers);
+            // 3. Tạo Attempt trống và Bắt đầu làm bài
+            Map<String, String> emptyAnswers = new HashMap<>();
+            Attempt attempt = new Attempt(null, null, null, quiz.getQuestions(), emptyAnswers);
 
             attempt.start();
             System.out.println("- Trạng thái Attempt sau khi start: " + attempt.getState());
 
-            // 4. Sinh viên điền đáp án
-            attempt.getAnswers().put("Q1", "2");
-            attempt.getAnswers().put("Q2", "true");
-            attempt.getAnswers().put("Q3", "OOP");
+            // 4. Sinh viên điền đáp án (DÙNG HÀM MỚI TẠO Ở BƯỚC 1)
+            attempt.answerQuestion("Q1", "2");
+            attempt.answerQuestion("Q2", "true");
+            attempt.answerQuestion("Q3", "OOP");
 
             // 5. Nộp bài
             attempt.submit(quiz.getTimeLimit());
             System.out.println("- Trạng thái Attempt sau khi nộp: " + attempt.getState());
-
-            // 6. Chấm điểm
-            QuizGrader grader = new QuizGrader();
-            List<GradeResult> results = grader.gradeAttempt(attempt);
-            double total = grader.calculateTotalScore(results);
-
-            System.out.println("- Tổng điểm đạt được: " + total + "/30.0");
-            System.out.println("=> THÀNH CÔNG: Chạy trọn vẹn luồng làm bài!\n");
 
         } catch (Exception e) {
             System.out.println("Lỗi Test 1: " + e.getMessage());
