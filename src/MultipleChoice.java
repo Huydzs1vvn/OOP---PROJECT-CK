@@ -7,7 +7,7 @@ public class MultipleChoice extends Question {
     private List<String> choices;
 
     public MultipleChoice(String id, String text, double points, List<String> choices, String correctChoice) {
-        super(id, text, points) // Gọi constructor của class cha (Question)
+        super(id, text, points); // Gọi constructor của class cha (Question)
         this.choices = choices;
         this.correctChoice = correctChoice;
     }
