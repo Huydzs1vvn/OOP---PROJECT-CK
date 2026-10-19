@@ -54,6 +54,13 @@ public class Attempt {
             this.state = AttemptState.SUBMITTED;      //đánh dấu bài thi đã nộp
         }
     }
+    
+    public void answerQuestion(String questionId, String answer) {
+        if (this.state != AttemptState.IN_PROGRESS) {
+            throw new IllegalStateException("Chỉ được phép điền đáp án khi đang làm bài.");
+        }
+        this.answers.put(questionId, answer);
+    }
 
     public LocalDateTime getStartedAt() {
         return startedAt;
