@@ -1,11 +1,11 @@
 ### WEEK 2 TASK ALLOCATION
-1.Vũ Thành Huy (Team Leader):
-* **Implement Core Classes (Question Group):** Code the abstract `Question` class and its three subclasses (`MultipleChoice`, `TrueFalse`, `ShortAnswer`), also `GradeResult` class. Ensure the inheritance hierarchy and the polymorphic `grade()` method function correctly.
-* **Write Unit Test 1 ("Happy path" end-to-end scenario):** Verify that a student can successfully complete a quiz attempt under normal conditions and receive an accurate score.
-* **Write Unit Test 2 (Validation / Invariant Test)**: Develop an automated test for the Validation/Error scenario: Attempt to call submit() when the exam is still in NOT_STARTED state (before calling start()) to prove the system rejects invalid state transitions.
-* **Write Unit Test 3 (Invariant Test):** Develop an automated test for the Validation/Error scenario: Set a `timeLimit` of 1 second, simulate a 2-second delay, and call the submit function to prove the system successfully rejects late submissions (Encapsulation check).
-* **Individual Teach-back:** Explain the specific data protected by the `Question` class and its subclasses (e.g., `correctAnswer`). Analyze the consequences: *What would break or allow cheating if this field were made `public`?* Include relevant test output screenshots as evidence.
-* **AI Usage Log:** Maintain personal AI log detailing tool, date, prompts, output summary, and specifically, the verification method and modifications made.
+1. Vũ Thành Huy (Team Leader):
+- Implement Core Classes (Question Group): Code the abstract `Question` class and its three subclasses (`MultipleChoice`, `TrueFalse`, `ShortAnswer`), also `GradeResult` class. Ensure the inheritance hierarchy and the polymorphic `grade()` method function correctly.
+- Write Unit Test 1 ("Happy path" end-to-end scenario): Verify that a student can successfully start an attempt, answer questions via `answerQuestion()`, and submit under normal conditions.
+- Write Unit Test 2 (Validation / Invariant Test): Develop an automated test for the Validation/Error scenario: Attempt to call `submit()` when the exam is still in `NOT_STARTED` state (before calling `start()`) to prove the system rejects invalid state transitions (Encapsulation check).
+- Write Unit Test 3 (Polymorphism / Grading Test): Develop an automated test verifying that the system can accurately grade a mixed list of different question types (`MultipleChoice`, `TrueFalse`, `ShortAnswer`) polymorphically, without relying on `if/else` type-checking logic.
+- Individual Teach-back: Explain the specific data protected by the `Question` class and its subclasses (e.g., `correctChoice`, `correctAnswer`, `expectedAnswer`). Analyze the consequences: What would break or allow cheating if these fields were made `public`? Include a hand-traced worked example and relevant test output screenshots as evidence.
+- AI Usage Log: Maintain personal AI log detailing tool, date, prompts, output summary, and specifically, the verification method and modifications made.
 
 2.Trần Hoàng Kha (Team Member):**
 * **Implement Core Classes (Quiz Management Group):** Code the `Quiz` class, the `Attempt` class, the `QuizGrader` and enumeration `AttemptState`
