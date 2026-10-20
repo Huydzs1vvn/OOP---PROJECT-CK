@@ -1,4 +1,4 @@
-Week 1:
+**Week 1:**
 In our design, we strategically employed both inheritance and composition to build a flexible system.
 
 Inheritance: We used inheritance for the Question hierarchy (MultipleChoice, TrueFalse, ShortAnswer inheriting from the abstract Question class). This "IS-A" relationship is essential because it allows us to utilize polymorphism. By defining an abstract grade() method in the base class, the QuizGrader can evaluate any question type without needing to know its specific subclass, cleanly satisfying the Open/Closed principle.
@@ -10,7 +10,7 @@ Polymorphism & Abstract Classes: Crucial for implementing the grade() method acr
 Encapsulation: Necessary for managing the state of an Attempt (ensuring the time limit cannot be tampered with from the outside). This is exactly what I verified in Test Case 2 of our Test Plan
 Collections: Required for storing the list of questions within a Quiz and managing the questionOrder within an Attempt.
 
-Week 2:
+**Week 2:**
 
 ### 1. What Each Class Protects (Encapsulation & Invariants)
 In Week 2, I implemented the `Question` hierarchy (`Question`, `MultipleChoice`, `TrueFalse`, `ShortAnswer`), the `GradeResult` class, and the 3 core test scenarios in `Main.java`:
