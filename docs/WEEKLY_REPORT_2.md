@@ -35,3 +35,11 @@ int doTime = (int) Duration.between(startedAt, LocalDateTime.now()).getSeconds()
         if (doTime > timeLimit) {  => We fixed it: if(doTime > timeLimit * 60)
             this.state = AttemptState.EXPIRED;  //đánh dấu bài thi đã hết hạn
             return true;
+
+
+### Syllabus Linkage & OOP Principles (Group Self-Explanation)
+To perfectly align with our course syllabus and the specific project requirements, our Week 2 implementation actively demonstrates the following core OOP concepts:
+
+* **Encapsulation:** We strictly encapsulated the internal states of our core classes. The `Attempt` class manages its own lifecycle (`AttemptState`) and timing internally, while the `Question` subclasses (`MultipleChoice`, `TrueFalse`, `ShortAnswer`) hide their specific answer keys. This prevents external entities from bypassing the exam rules or directly reading the correct answers to cheat.
+* **Polymorphism:** We implemented an abstract `Question` class with an abstract `grade(String studentAnswer)` method. Each subclass overrides this method to provide its own grading logic. As a result, the system can grade a mixed list of questions polymorphically without relying on procedural `if/else` or `switch` statements to check the question type.
+* **Open/Closed Principle (O/C):** Our grading engine (`QuizGrader`) is open for extension but closed for modification. Because the grading logic relies on the polymorphic `grade()` method of the `Question` abstraction, we can easily add new question types in the future (such as a `FillInTheBlank` or `Matching` question) by simply creating a new subclass. The existing `QuizGrader` engine will not require a single line of code edited to support these new types.
