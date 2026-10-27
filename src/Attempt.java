@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.time.Duration;
+import exceptions.*;
+
 public class Attempt {
     LocalDateTime startedAt;        //thời gian bắt đầu làm bài
     LocalDateTime submittedAt;      //thời gian nộp bài
@@ -44,20 +46,23 @@ public class Attempt {
         }
     }
 
-    public void submit(int timeLimit) {
+   public void submit(int timeLimit) throws QuizNotStartedException, AttemptExpiredException {
         if (state != AttemptState.IN_PROGRESS) {
-            throw new IllegalStateException("Only submitted exams when you're in progress.");
+            throw new QuizNotStartedException("Only submitted exams when you're in progress.");
         }
-        if (isExpired(timeLimit)) this.state = AttemptState.EXPIRED;
-        else {
-            this.submittedAt = LocalDateTime.now();   //đánh dấu thời gian nộp bài
-            this.state = AttemptState.SUBMITTED;      //đánh dấu bài thi đã nộp
+        
+        if (isExpired(timeLimit)) {
+            this.state = AttemptState.EXPIRED;
+            throw new AttemptExpiredException("Bài thi đã quá thời gian quy định, tự động chuyển sang EXPIRED.");
+        } else {
+            this.submittedAt = LocalDateTime.now();  // đánh dấu thời gian nộp bài
+            this.state = AttemptState.SUBMITTED;     // đánh dấu bài thi đã nộp
         }
     }
-    
-    public void answerQuestion(String questionId, String answer) {
+
+    public void answerQuestion(String questionId, String answer) throws QuizNotStartedException {
         if (this.state != AttemptState.IN_PROGRESS) {
-            throw new IllegalStateException("Chỉ được phép điền đáp án khi đang làm bài.");
+            throw new QuizNotStartedException("Chỉ được phép điền đáp án khi đang làm bài.");
         }
         this.answers.put(questionId, answer);
     }
