@@ -1,5 +1,5 @@
 import java.util.List;
-
+import java.util.ArrayList;
 public class MultipleChoice extends Question {
     // TÍNH ĐÓNG GÓI: Đáp án đúng bị giấu đi, biến thành private. 
     // Tránh việc sinh viên dùng Inspect Element lấy đáp án.
@@ -8,7 +8,7 @@ public class MultipleChoice extends Question {
 
     public MultipleChoice(String id, String text, double points, List<String> choices, String correctChoice) {
         super(id, text, points); // Gọi constructor của class cha (Question)
-        this.choices = choices;
+        this.choices = new ArrayList<>(choices);
         this.correctChoice = correctChoice;
     }
 
