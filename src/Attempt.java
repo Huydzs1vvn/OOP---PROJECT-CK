@@ -4,21 +4,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.time.Duration;
+import java.util.Collections;
 import exceptions.*;
-
 public class Attempt {
     LocalDateTime startedAt;        //thời gian bắt đầu làm bài
     LocalDateTime submittedAt;      //thời gian nộp bài
     AttemptState state;             //tình trạng bài thi
     List<Question> questionsOrder;  //lưu thứ tự các câu hỏi (có thể dùng để random thứ tự)
     Map<String, String> answers;    //lưu các câu trả lời của học sinh
-
+    Map<String, List<String>> choicesOrder;    //thứ tự lựa chọn riêng của mỗi lần làm(mỗi lần Attempt)
     public Attempt(LocalDateTime startedAt, LocalDateTime submittedAt, AttemptState state, List<Question> questionsOrder, Map<String, String> answers) {
         this.startedAt = startedAt;
         this.submittedAt = submittedAt;
         this.state = AttemptState.NOT_STARTED;  //đặt là chưa bắt đầu làm bài thi
         this.questionsOrder = new ArrayList<>(questionsOrder);
+        Collections.shuffle(this.questionsOrder);
         this.answers = new HashMap<>(answers);
+        this.choicesOrder = new HashMap<>();
+        for (Question q : this.questionsOrder) {
+            if (q instanceof MultipleChoice) {
+                MultipleChoice mc = (MultipleChoice) q;
+                List<String> choices = new ArrayList<>(mc.getChoices());
+                Collections.shuffle(choices);
+                this.choicesOrder.put(q.getId(), choices);
+            }
+        }
     }
 
     public void start() {
@@ -46,20 +56,20 @@ public class Attempt {
         }
     }
 
-   public void submit(int timeLimit) throws QuizNotStartedException, AttemptExpiredException {
+    public void submit(int timeLimit) throws QuizNotStartedException, AttemptExpiredException {
         if (state != AttemptState.IN_PROGRESS) {
             throw new QuizNotStartedException("Only submitted exams when you're in progress.");
         }
-        
         if (isExpired(timeLimit)) {
             this.state = AttemptState.EXPIRED;
-            throw new AttemptExpiredException("Bài thi đã quá thời gian quy định, tự động chuyển sang EXPIRED.");
-        } else {
-            this.submittedAt = LocalDateTime.now();  // đánh dấu thời gian nộp bài
-            this.state = AttemptState.SUBMITTED;     // đánh dấu bài thi đã nộp
+            throw new AttemptExpiredException("Bài thi đã quá thời hạn quy định, tự động chuyển sang EXPIRED");
+        }
+        else {
+            this.submittedAt = LocalDateTime.now();   //đánh dấu thời gian nộp bài
+            this.state = AttemptState.SUBMITTED;      //đánh dấu bài thi đã nộp
         }
     }
-
+    
     public void answerQuestion(String questionId, String answer) throws QuizNotStartedException {
         if (this.state != AttemptState.IN_PROGRESS) {
             throw new QuizNotStartedException("Chỉ được phép điền đáp án khi đang làm bài.");
@@ -81,5 +91,10 @@ public class Attempt {
     }
     public Map<String, String> getAnswers() {
         return new HashMap<>(answers);
+    }
+    public List<String> getChoicesOrder(String questionId) {
+        List<String> choices = choicesOrder.get(questionId);
+        if(choices == null) return new ArrayList<>();
+        return new ArrayList<>(choices);
     }
 }
