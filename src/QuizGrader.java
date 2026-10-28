@@ -39,7 +39,14 @@ public class QuizGrader {
         for (int i = 0; i < questions.size(); i++) {
             Question q = questions.get(i);
             GradeResult result = results.get(i);
-            System.out.printf("%s | Score: %.2f / %.2f | Correct: %s%n", q.getId(), result.getScoreAchieved(), result.getMaxPoints(), result.isCorrect() ? "Yes" : "No");
+
+            String answer = a.getAnswers().get(q.getId());
+            if (answer == null || answer.trim().isEmpty()) {
+                System.out.printf("%s | Chưa trả lời | Score: %.2f / %.2f | Correct: No", q.getId(), result.getScoreAchieved(), result.getMaxPoints());
+            }
+            else {
+                System.out.printf("%s | Score: %.2f / %.2f | Correct: %s%n", q.getId(), result.getScoreAchieved(), result.getMaxPoints(), result.isCorrect() ? "Yes" : "No");
+            }
         }
         System.out.println();
         System.out.printf("Total score: %.2f / %.2f%n", calculateTotalScore(results), calculateMaxScore(results));
