@@ -49,3 +49,55 @@ During Week 2 integration testing, we encountered a real bug caused by a mismatc
 ### 5. Test Output Evidence
 All 3 required scenarios (Happy Path, Validation/Error State Protection, and Polymorphism without `if/else`) compiled and passed:
 ![Week 2 Test Output](test_output.png)
+
+**Week 3:**
+
+### 1. Refactoring & Custom Exceptions (Before/After)
+Previously, handling invalid submissions relied on generic exceptions or returning `false` via procedural `if/else` statements. I refactored this approach by implementing **Custom Exceptions** (`QuizNotStartedException` and `AttemptExpiredException`) to handle business logic edge cases explicitly.
+
+**[BEFORE] Procedural Code (Generic Exceptions):**
+```java
+// Inside Attempt.java
+public void submit(int timeLimitMinutes) {
+    if (this.state == AttemptState.NOT_STARTED) {
+        throw new IllegalStateException("Quiz not started!"); 
+    }
+    if (isExpired(timeLimitMinutes)) {
+        this.state = AttemptState.EXPIRED;
+        throw new IllegalStateException("Time is up!");
+    }
+    this.state = AttemptState.SUBMITTED;
+    this.submittedAt = LocalDateTime.now();
+}
+```
+
+**[AFTER] Refactored Code (OOP Custom Exceptions):**
+```java
+// Inside Attempt.java
+public void submit(int timeLimitMinutes) throws QuizNotStartedException, AttemptExpiredException {
+    if (this.state == AttemptState.NOT_STARTED) {
+        throw new QuizNotStartedException("Cannot submit: The quiz has not been started yet.");
+    }
+    if (isExpired(timeLimitMinutes)) {
+        this.state = AttemptState.EXPIRED;
+        throw new AttemptExpiredException("Submission rejected: The attempt has expired.");
+    }
+    this.state = AttemptState.SUBMITTED;
+    this.submittedAt = LocalDateTime.now();
+}
+```
+
+### 2. OOP Principle Applied: Encapsulation
+This refactoring directly improves and demonstrates **Encapsulation**. 
+- **Why this is the right tool for the problem:** The `Attempt` class must be solely responsible for tracking its own timing and submission state. By introducing specialized custom exceptions, `Attempt` strictly protects its internal state lifecycle. Any external caller invoking `submit()` is now forced by the compiler to handle (via try-catch) these specific business rules. This perfectly encapsulates the error-handling logic within `Attempt`, preventing external components from blindly overriding the state or bypassing time limits.
+
+### 3. Edge-Case Testing & Reflection (Verification)
+To verify this encapsulation (specifically boundary values for timing), I implemented **Test Case 2.2**. 
+- Because waiting 60 minutes during a unit test is unfeasible, I utilized **Reflection** (`getDeclaredField("startedAt")`) to securely access the `private` started time and rewind it by 65 minutes. 
+- When `submit(60)` was subsequently called, the system successfully caught the edge case and threw the `AttemptExpiredException`, proving that the time-limit constraint is strictly enforced server-side.
+
+### 4. Artifacts & Deliverables
+- **Updated UML:** Revised `UML.png` to accurately reflect the new Custom Exceptions (`QuizNotStartedException`, `AttemptExpiredException`) and the new interactive methods (`answerQuestion`, `printScoreBreakdown`).
+  - ![UML Diagram](../UML.png)
+- **Test Output:** Full verification of edge cases (Test 2.1 & 2.2) and the interactive threaded test (Full Completed Test) is documented in the test artifacts.
+  - [View Test Output Log](./docs/test_output_week3.txt)
