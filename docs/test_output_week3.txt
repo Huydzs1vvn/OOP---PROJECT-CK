@@ -1,0 +1,81 @@
+========== BẮT ĐẦU CHẠY TEST CASE ==========
+
+>>> TEST CASE 1: HAPPY PATH (Luồng cơ bản)
+Trang thai học sinh A sau khi start: IN_PROGRESS
+- Trạng thái học sinh A sau khi nộp: SUBMITTED
+>>> TEST CASE 2.1: VALIDATION ERROR (Bảo vệ trạng thái - Chưa bắt đầu)
+- Trạng thái hiện tại: NOT_STARTED
+- Cố tình nộp bài khi CHƯA BẮT ĐẦU (chưa gọi start())...
+- Bắt lỗi thành công: Only submitted exams when you're in progress.
+=> THÀNH CÔNG: Tính đóng gói và bảo vệ trạng thái hoạt động đúng!
+
+>>> TEST CASE 2.2: VALIDATION ERROR (Bảo vệ thời gian làm bài)
+- Trạng thái hiện tại: IN_PROGRESS nhưng giả lập đã hết giờ
+- Cố tình nộp bài...
+- Bắt lỗi quá giờ thành công: Bài thi đã quá thời hạn quy định, tự động chuyển sang EXPIRED
+=> THÀNH CÔNG: Hệ thống chặn nộp bài trễ hạn xuất sắc!
+
+Chương trình tiếp tục chạy các test case khác...
+
+>>> TEST CASE 3: POLYMORPHISM (Tính Đa hình)
+- Hệ thống tự động gọi đúng hàm grade() của từng class con:
+  + MultipleChoice chấm chuỗi 'Hà Nội' -> ĐÚNG (10.0đ)
+  + TrueFalse chấm chuỗi 'false' -> SAI (0.0đ)
+  + ShortAnswer chấm chuỗi '  oBject Oriented pRogramming  ' -> ĐÚNG (10.0đ)
+=> THÀNH CÔNG: Đa hình hoạt động xuất sắc!
+
+TEST CASE 4: SCORE BREAKDOWN AND CALCULATION
+SCORE BREAKDOWN
+Q2 | Score: 0.00 / 10.00 | Correct: No
+Q3 | Score: 10.00 / 10.00 | Correct: Yes
+Q1 | Score: 10.00 / 10.00 | Correct: Yes
+
+Total score: 20.00 / 30.00
+TEST CASE 5: QUESTION ORDER RANDOMIZATION
+Thứ tự câu hỏi sinh viên A
+Q3: Thủ đô của Anh là gì?
+Q2: Mặt trời mọc đằng Đông lặn đằng Tây
+Q1: Argentina đã vô địch World Cup bao nhiêu lần?
+Thứ tự câu hỏi sinh viên B
+Q1: Argentina đã vô địch World Cup bao nhiêu lần?
+Q3: Thủ đô của Anh là gì?
+Q2: Mặt trời mọc đằng Đông lặn đằng Tây
+Câu hỏi Q1:
+Argentina đã vô địch World Cup bao nhiêu lần?
+Sinh viên A chọn:
+A.1
+C.3
+B.2
+Sinh viên B chọn:
+A.1
+B.2
+C.3
+FULL COMPLETED TEST
+Bai thi: Bai kiem tra giua ki
+Thoi gian: 1 phut
+Nhap dap an cho tung cau.Het gio se tu ket thuc bai thi.
+Q1: 2 + 2 = ?
+A.1
+D.5
+C.3
+B.4
+Your answer:
+4
+
+Q2: 1 + 1 = 2
+Your answer:
+true
+
+Q3: What is the capital of VietNam
+Your answer:
+HaNoi
+
+NOP BAI THANH CONG
+Trang thai bai thiSUBMITTED
+SCORE BREAKDOWN
+Q1 | Score: 10.00 / 10.00 | Correct: Yes
+Q2 | Score: 10.00 / 10.00 | Correct: Yes
+Q3 | Score: 10.00 / 10.00 | Correct: Yes
+
+Total score: 30.00 / 30.00
+========== KẾT THÚC TEST ==========
