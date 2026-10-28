@@ -78,6 +78,7 @@ public class Main {
     }
 
     // --- KỊCH BẢN 2.2: Nộp bài khi ĐÃ QUÁ GIỜ ---
+    // --- KỊCH BẢN 2.2: Nộp bài khi ĐÃ QUÁ GIỜ ---
     System.out.println(">>> TEST CASE 2.2: VALIDATION ERROR (Bảo vệ thời gian làm bài)");
     try {
         Quiz quiz2 = new Quiz("QUIZ_TIMEOUT", "Bài test quá giờ", 60, Arrays.asList(
@@ -85,18 +86,29 @@ public class Main {
         ));
         Attempt timeoutAttempt = new Attempt(null, null, null, quiz2.getQuestions(), new HashMap<>());
         
-        // Kịch bản này BẮT BUỘC phải gọi start() thì mới chuyển sang IN_PROGRESS được
         timeoutAttempt.start(); 
         
-        System.out.println("- Trạng thái hiện tại: " + timeoutAttempt.getState() + " nhưng đã hết giờ");
+        System.out.println("- Trạng thái hiện tại: " + timeoutAttempt.getState() + " nhưng giả lập đã hết giờ");
         System.out.println("- Cố tình nộp bài...");
         
-        // Truyền 0 phút để ép hàm isExpired() báo hết hạn và văng lỗi AttemptExpiredException
-        timeoutAttempt.submit(0); 
+        // HACK: Dùng Reflection tua thời gian bắt đầu (startedAt) về 65 phút trước
+        java.lang.reflect.Field field = timeoutAttempt.getClass().getDeclaredField("startedAt");
+        field.setAccessible(true);
+        Object startTime = field.get(timeoutAttempt);
+        if (startTime instanceof java.time.LocalDateTime) {
+            field.set(timeoutAttempt, ((java.time.LocalDateTime) startTime).minusMinutes(65));
+        } else if (startTime instanceof java.util.Date) {
+            field.set(timeoutAttempt, new java.util.Date(((java.util.Date) startTime).getTime() - 65 * 60 * 1000));
+        }
         
-    } catch (AttemptExpiredException e) {
+        // Truyền 60 phút như bình thường, hệ thống sẽ tự phát hiện đã trễ 5 phút
+        timeoutAttempt.submit(60); 
+        
+    } catch (exceptions.AttemptExpiredException e) {
         System.out.println("- Bắt lỗi quá giờ thành công: " + e.getMessage());
         System.out.println("=> THÀNH CÔNG: Hệ thống chặn nộp bài trễ hạn xuất sắc!\n");
+    } catch (Exception e) {
+        System.out.println("- Lỗi không mong muốn: " + e.getMessage());
     }
 
     System.out.println("Chương trình tiếp tục chạy các test case khác...\n");
