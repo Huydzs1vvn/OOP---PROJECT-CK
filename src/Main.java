@@ -58,31 +58,49 @@ public class Main {
 
     // TEST CASE 2: VALIDATION / ERROR SCENARIO
     // Chứng minh Encapsulation: Cố tình nộp bài khi chưa bắt đầu làm (Lỗi State)
-    public static void runTestCase2_ValidationError() {
-        System.out.println(">>> TEST CASE 2: VALIDATION ERROR (Bảo vệ trạng thái)");
-        try {
-            Quiz quiz = new Quiz("QUIZ_02", "Bài test bắt lỗi", 60, Arrays.asList(
-                new TrueFalse("Q1", "Câu hỏi test", 10.0, true)
-            ));
-            
-            Attempt attempt = new Attempt(null, null, null, quiz.getQuestions(), new HashMap<>());
-            
-            System.out.println("- Trạng thái hiện tại: " + attempt.getState());
-            System.out.println("- Cố tình nộp bài khi CHƯA BẮT ĐẦU (chưa gọi start())...");
-            
-            // Cố tình gọi submit khi state đang là NOT_STARTED (Sẽ bị Kha chặn lại)
-            attempt.submit(60);
-            
-        } catch (QuizNotStartedException e) {
-            System.out.println("- Bắt lỗi thành công: " + e.getMessage());
-            System.out.println("=> THÀNH CÔNG: Tính đóng gói và bảo vệ trạng thái hoạt động đúng!\n");
-            System.out.println("Chương trình tiếp tục chạy các test case khác");
-        } catch (AttemptExpiredException e) {
-            System.out.println("Bài thi đã hết hạn: " + e.getMessage());
-            System.out.println("Lỗi ngoài dự kiến: " + e.getMessage());
-        }
-        System.out.println("\n");
+   public static void runTestCase2_ValidationError() {
+    // --- KỊCH BẢN 2.1: Nộp bài khi CHƯA bắt đầu ---
+    System.out.println(">>> TEST CASE 2.1: VALIDATION ERROR (Bảo vệ trạng thái - Chưa bắt đầu)");
+    try {
+        Quiz quiz = new Quiz("QUIZ_02", "Bài test bắt lỗi", 60, Arrays.asList(
+            new TrueFalse("Q1", "Câu hỏi test", 10.0, true)
+        ));
+        Attempt attempt = new Attempt(null, null, null, quiz.getQuestions(), new HashMap<>());
+        
+        System.out.println("- Trạng thái hiện tại: " + attempt.getState());
+        System.out.println("- Cố tình nộp bài khi CHƯA BẮT ĐẦU (chưa gọi start())...");
+        
+        attempt.submit(60); // Sẽ văng lỗi QuizNotStartedException ở đây
+        
+    } catch (QuizNotStartedException e) {
+        System.out.println("- Bắt lỗi thành công: " + e.getMessage());
+        System.out.println("=> THÀNH CÔNG: Tính đóng gói và bảo vệ trạng thái hoạt động đúng!\n");
     }
+
+    // --- KỊCH BẢN 2.2: Nộp bài khi ĐÃ QUÁ GIỜ ---
+    System.out.println(">>> TEST CASE 2.2: VALIDATION ERROR (Bảo vệ thời gian làm bài)");
+    try {
+        Quiz quiz2 = new Quiz("QUIZ_TIMEOUT", "Bài test quá giờ", 60, Arrays.asList(
+            new TrueFalse("Q2", "Câu hỏi test", 10.0, true)
+        ));
+        Attempt timeoutAttempt = new Attempt(null, null, null, quiz2.getQuestions(), new HashMap<>());
+        
+        // Kịch bản này BẮT BUỘC phải gọi start() thì mới chuyển sang IN_PROGRESS được
+        timeoutAttempt.start(); 
+        
+        System.out.println("- Trạng thái hiện tại: " + timeoutAttempt.getState() + " nhưng đã hết giờ");
+        System.out.println("- Cố tình nộp bài...");
+        
+        // Truyền 0 phút để ép hàm isExpired() báo hết hạn và văng lỗi AttemptExpiredException
+        timeoutAttempt.submit(0); 
+        
+    } catch (AttemptExpiredException e) {
+        System.out.println("- Bắt lỗi quá giờ thành công: " + e.getMessage());
+        System.out.println("=> THÀNH CÔNG: Hệ thống chặn nộp bài trễ hạn xuất sắc!\n");
+    }
+
+    System.out.println("Chương trình tiếp tục chạy các test case khác...\n");
+}
 
     // TEST CASE 3: POLYMORPHISM (Tính Đa hình)
     // Chứng minh hệ thống tự phân loại chấm điểm mà KHÔNG CẦN if/else
