@@ -45,6 +45,15 @@ To verify our incremental progress, here are the direct links to our key commits
 
 ---
 
+### Syllabus Linkage & OOP Principles (Group Self-Explanation)
+To explicitly map our Week 3 progress to the course syllabus and project requirements, we applied the following concepts:
+
+* **Exceptions & Encapsulation:** We deeply applied Exception Handling by creating custom exceptions (`QuizNotStartedException`, `AttemptExpiredException`). This ties directly into **Encapsulation**, as the `Attempt` class now uses these exceptions to strictly protect its own lifecycle and timing invariants (rejecting invalid state transitions rather than relying on external procedural `if/else` checks).
+* **Collections (List & Map):** We heavily utilized the Java Collections framework. We managed `List<Question>` to construct the randomized exam and `Map<String, String>` to store the student's mapped answers. We also used `Collections.shuffle()` to implement the question and choice order randomization required by the prompt.
+* **Basic Multi-threading & I/O:** To implement the end-to-end interactive exam (Test Case: Full Completed Test), we utilized `Scanner` for console Input/Output and a concurrent `LinkedBlockingQueue` with a daemon Thread to handle timed user inputs asynchronously, proving the robustness of our architecture in a live simulated environment.
+* 
+---
+
 ### WEEK 4 PLAN
 Moving forward to Week 4 (Theme: Extend, finalize & prepare defense), our team will focus on the final deliverables:
 
