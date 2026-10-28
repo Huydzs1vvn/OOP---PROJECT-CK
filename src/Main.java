@@ -4,16 +4,21 @@ import java.util.Map;
 import exceptions.AttemptExpiredException;
 import exceptions.QuizNotStartedException;
 import java.util.HashMap;
+import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("========== BẮT ĐẦU CHẠY 5 TEST CASE ==========\n");
+        System.out.println("========== BẮT ĐẦU CHẠY TEST CASE ==========\n");
 
         runTestCase1_HappyPath();
         runTestCase2_ValidationError();
         runTestCase3_Polymorphism();
         runTestCase4_ScoreBreakDownAndCalculation();
         runTestCase5_QuestionOrderRandomization();
+        runTestCase_FullCompletedTest();
 
         System.out.println("========== KẾT THÚC TEST ==========");
     }
@@ -182,6 +187,99 @@ public class Main {
         }
         catch (Exception e) {
             System.out.println("Lỗi test 5: " + e.getMessage());
+        }
+    }
+
+    //TEST CASE: FULL COMPLETED TEST
+    public static void runTestCase_FullCompletedTest() {
+        System.out.println("FULL COMPLETED TEST");
+        Question q1 = new MultipleChoice("Q1", "2 + 2 = ?", 10.0, Arrays.asList("A.1", "B.4", "C.3", "D.5"), "4");
+        Question q2 = new TrueFalse("Q2", "1 + 1 = 2", 10.0, true);
+        Question q3 = new ShortAnswer("Q3", "What is the capital of VietNam", 10.0, "HaNoi");
+        List<Question> questions = Arrays.asList(q1,q2,q3);
+        
+        final int timeLimitMinutes = 1;
+        Quiz quiz = new Quiz("Quiz Test", "Bai kiem tra giua ki", timeLimitMinutes, questions);
+        Attempt attempt = new Attempt (null, null, null, quiz.getQuestions(), new HashMap<>());
+        QuizGrader grader = new QuizGrader();
+
+        final BlockingQueue<String> inputQueue = new LinkedBlockingQueue<>();
+        Thread inputThread = new Thread(() -> {
+            Scanner scanner = new Scanner(System.in);
+            while(scanner.hasNextLine()) {
+                try {
+                    inputQueue.put(scanner.nextLine());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        });
+        inputThread.setDaemon(true);
+        inputThread.start();
+
+        try {
+            attempt.start();
+            long deadlineNanos = System.nanoTime() + TimeUnit.MINUTES.toNanos(quiz.getTimeLimit());
+            System.out.println("Bai thi: " + quiz.getTitle());
+            System.out.println("Thoi gian: " + quiz.getTimeLimit() + " phut");
+            System.out.println("Nhap dap an cho tung cau.Het gio se tu ket thuc bai thi.");
+            
+            boolean timeExpired = false;
+            for (Question question : attempt.getQuestionsOrder()) {
+                long remainingNanos = deadlineNanos - System.nanoTime();
+                if(remainingNanos <= 0) {
+                    timeExpired = true;
+                    break;
+                }
+                System.out.println(question.getId() + ": " + question.getText());
+                if (question instanceof MultipleChoice) {
+                    List<String> choices = attempt.getChoicesOrder(question.getId());
+                    for (String choice : choices) {
+                        System.out.println(choice);
+                    }
+                }
+                System.out.println("Your answer: ");
+                System.out.flush();
+
+                remainingNanos = deadlineNanos - System.nanoTime();
+                if (remainingNanos <= 0) {
+                    timeExpired = true;
+                    break;
+                }
+                String answer = inputQueue.poll(remainingNanos, TimeUnit.NANOSECONDS);
+                if (answer == null) {
+                    timeExpired = true;
+                    break;
+                }
+
+                attempt.answerQuestion(question.getId(), answer.trim());
+                System.out.println();
+            }
+            
+            if(timeExpired || System.nanoTime() >= deadlineNanos) {
+                while(!attempt.isExpired(quiz.getTimeLimit())) {
+                    Thread.sleep(20);
+                }
+                System.out.println("HET GIO. BAI THI TU DONG KET THUC");
+                System.out.println("Trang thai bai thi" + attempt.getState());
+            }
+            else {
+                attempt.submit(quiz.getTimeLimit());
+                System.out.println("NOP BAI THANH CONG");
+                System.out.println("Trang thai bai thi" + attempt.getState());
+            }
+            List<GradeResult> results = grader.gradeAttempt(attempt);
+            grader.printScoreBreakdown(attempt, results);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("TEST CASE BI GIAN DOAN" + e.getMessage());
+        } catch (QuizNotStartedException | AttemptExpiredException e) {
+            System.out.println("KHONG THE HOAN TAT BAI THI" + e.getMessage());
+            List<GradeResult> results = grader.gradeAttempt(attempt);
+            grader.printScoreBreakdown(attempt, results);
+        } catch (Exception e) {
+            System.out.println("LOI TEST" + e.getMessage());
         }
     }
 }
