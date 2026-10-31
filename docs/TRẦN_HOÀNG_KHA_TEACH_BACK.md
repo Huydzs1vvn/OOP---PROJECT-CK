@@ -73,7 +73,7 @@ Specifically:
 -choicesOrder: I added a "Map<String, List<String>>" to store the specific order of options for each question within a given Attempt. This allows the program to display options in their randomized order while preserving the original list of options defined in the "MultipleChoice" class.
 -getChoicesOrder(): I implemented this method to retrieve the randomized list of options for a specific question ID. The method returns a copy of the list, which prevents other parts of the program from inadvertently modifying the data stored within an Attempt.
 Overall, these changes enhance the randomness of the test, allow for the management of unique option sequences for each attempt, and safeguard the integrity of the original question data. This improvement makes the assessment more dynamic and reduces the likelihood of students encountering the same question or answer sequence.
-Finally, I have executed 3 test cases—TestCase 4, TestCase 5, and the Full Completed Test—with the outputs provided in the file "test_output_week3_img"
+Finally, I have executed 3 test cases—TestCase 4, TestCase 5, and the Full Completed Test—with the outputs provided in the file "test_output_week3_txt"
 
 This week, I used AI (GPT-6 of OpenAI) to assist in developing the project.
 Prompt:
