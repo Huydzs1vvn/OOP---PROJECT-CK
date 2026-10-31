@@ -74,16 +74,18 @@ public void submit(int timeLimitMinutes) {
 **[AFTER] Refactored Code (OOP Custom Exceptions):**
 ```java
 // Inside Attempt.java
-public void submit(int timeLimitMinutes) throws QuizNotStartedException, AttemptExpiredException {
-    if (this.state == AttemptState.NOT_STARTED) {
-        throw new QuizNotStartedException("Cannot submit: The quiz has not been started yet.");
+public void submit(int timeLimit) throws QuizNotStartedException, AttemptExpiredException {
+    if (state != AttemptState.IN_PROGRESS) {
+        throw new QuizNotStartedException("Only submitted exams when you're in progress.");
     }
-    if (isExpired(timeLimitMinutes)) {
+    if (isExpired(timeLimit)) {
         this.state = AttemptState.EXPIRED;
-        throw new AttemptExpiredException("Submission rejected: The attempt has expired.");
+        throw new AttemptExpiredException("Bài thi đã quá thời hạn quy định, tự động chuyển sang EXPIRED");
     }
-    this.state = AttemptState.SUBMITTED;
-    this.submittedAt = LocalDateTime.now();
+    else {
+        this.submittedAt = LocalDateTime.now();   //đánh dấu thời gian nộp bài
+        this.state = AttemptState.SUBMITTED;      //đánh dấu bài thi đã nộp
+    }
 }
 ```
 
