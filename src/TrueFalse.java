@@ -9,6 +9,9 @@ public class TrueFalse extends Question {
     @Override
     public GradeResult grade(String studentAnswer) {
         // Chuyển chuỗi trả lời (vd: "true") thành kiểu boolean và so sánh
+        if (studentAnswer == null || studentAnswer.trim().isEmpty()) {
+            return new GradeResult(0, getPoints(), false);
+        }
         boolean parsedAnswer = Boolean.parseBoolean(studentAnswer.trim());
         boolean isCorrect = (parsedAnswer == correctChoice);
         double score = isCorrect ? getPoints() : 0;
