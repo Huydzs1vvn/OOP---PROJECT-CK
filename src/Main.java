@@ -18,6 +18,8 @@ public class Main {
         runTestCase3_Polymorphism();
         runTestCase4_ScoreBreakDownAndCalculation();
         runTestCase5_QuestionOrderRandomization();
+        runTestCase6_ShortAnswerGradingStrategy();
+        runTestCase7_NullAnswerReflection();
         runTestCase_FullCompletedTest();
 
         System.out.println("========== KẾT THÚC TEST ==========");
@@ -42,7 +44,7 @@ public class Main {
             attempt.start();
             System.out.println("Trang thai học sinh A sau khi start: " + attempt.getState());
 
-            // 4. Sinh viên A và B điền đáp án (DÙNG HÀM MỚI TẠO Ở BƯỚC 1)
+            // 4. Sinh viên điền đáp án (DÙNG HÀM MỚI TẠO Ở BƯỚC 1)
             attempt.answerQuestion("Q1", "2");
             attempt.answerQuestion("Q2", "true");
             attempt.answerQuestion("Q3", "OOP");
@@ -50,12 +52,12 @@ public class Main {
 
             // 5. Nộp bài
             attempt.submit(quiz.getTimeLimit());
-            System.out.println("- Trạng thái học sinh A sau khi nộp: " + attempt.getState());
+            System.out.println("- Trạng thái học sinh  sau khi nộp: " + attempt.getState());
         } 
         catch (Exception e) {
             System.out.println("Lỗi Test 1: " + e.getMessage());
-            System.out.println("\n");
         }
+        System.out.println("\n");
     }
 
     // TEST CASE 2: VALIDATION / ERROR SCENARIO
@@ -110,11 +112,9 @@ public class Main {
         System.out.println("=> THÀNH CÔNG: Hệ thống chặn nộp bài trễ hạn xuất sắc!\n");
     } catch (Exception e) {
         System.out.println("- Lỗi không mong muốn: " + e.getMessage());
+        System.out.println("\n");
     }
-
-    System.out.println("Chương trình tiếp tục chạy các test case khác...\n");
 }
-
     // TEST CASE 3: POLYMORPHISM (Tính Đa hình)
     // Chứng minh hệ thống tự phân loại chấm điểm mà KHÔNG CẦN if/else
     public static void runTestCase3_Polymorphism() {
@@ -123,7 +123,7 @@ public class Main {
             List<Question> questions = Arrays.asList(
                 new MultipleChoice("Q1", "Thủ đô VN?", 10.0, Arrays.asList("Hà Nội", "Huế"), "Hà Nội"),
                 new TrueFalse("Q2", "Java là OOP?", 10.0, true),
-                new ShortAnswer("Q3", "Môn học tên gì?", 10.0, "Object Oriented Programming")
+                new ShortAnswer("Q3", "Môn học tên gì?", 10.0, "Object Oriented Programming"),
                 new FillInTheBlank("Q4", "SOLID chữ O viết tắt của ___", 10.0, "Open Closed")
             );
             
@@ -175,8 +175,8 @@ public class Main {
         }
         catch (Exception e) {
             System.out.println("Lỗi Test 4: " + e.getMessage());
-            System.out.println("\n");
         }
+        System.out.println("\n");
     }
 
     //TEST CASE 5: Question Order Randomization
@@ -221,6 +221,59 @@ public class Main {
         catch (Exception e) {
             System.out.println("Lỗi test 5: " + e.getMessage());
         }
+        System.out.println("\n");
+    }
+
+    //TEST CASE 6: SHORT ANSWER GRADING STRATEGY
+    public static void runTestCase6_ShortAnswerGradingStrategy() {
+        System.out.println("TEST CASE 6: SHORT ANSWER GRADING STRATEGY");
+        try {
+            Question q = new ShortAnswer("Q", "What does OOP stand for?",10.0, "Object Oriented");
+            String[] testAnswers = {"Object Oriented", "  object oriented  ", "OBJECT ORIENTED", "Object-Oriented"};
+            for (String answer : testAnswers) {
+                GradeResult result = q.grade(answer);
+                System.out.println("Student answer: [" + answer + "]");
+                System.out.println("Score: " + result.getScoreAchieved());
+                System.out.println("Correct: " + result.isCorrect()); //nếu trả lời là Object-Oriented thì sẽ sai, các đáp án còn lại đều đúng
+                System.out.println();
+            }
+            System.out.println("TEST CASE 6 PASSED");
+        }
+        catch (Exception e) {
+            System.out.println("Short Answer test failed: " + e.getMessage());
+        }
+        System.out.println("\n");
+    }
+
+    //TEST CASE 7: NULL ANSWER REFLECTION
+    public static void runTestCase7_NullAnswerReflection() {
+        System.out.println("TEST CASE 7: NULL ANSWER REFLECTION");
+        try {
+            Question q1 = new TrueFalse("Q1", "1 + 1 = 2", 10.0, true);
+            Question q2 = new MultipleChoice("Q2", "2 + 2 = ?", 10.0, Arrays.asList("A.1", "B.2", "C.3", "D.4"), "4");
+            //Reflection kiểm tra TrueFalse.grade(null)
+            java.lang.reflect.Method tfMethod = TrueFalse.class.getMethod("grade", String.class);
+            GradeResult tfResult = (GradeResult) tfMethod.invoke(q1, new Object[]{null});
+            System.out.println("TrueFalse.grade(null): ");
+            System.out.println("Score: " + tfResult.getScoreAchieved());    //xác nhận khi bỏ trống score = 0 không
+            System.out.println("No NullPointerException: PASS");
+
+            //Reflection kiểm tra MultipleChoice.grade(null)
+            java.lang.reflect.Method mcMethod = MultipleChoice.class.getMethod("grade", String.class);
+            GradeResult mcResult = (GradeResult) mcMethod.invoke(q2, new Object[]{null});
+            System.out.println("MultipleChoice.grade(null): ");
+            System.out.println("Score: " + mcResult.getScoreAchieved());    //xác nhận khi bỏ trống score = 0 không
+            System.out.println("No NullPointerException: PASS");
+        }
+        catch (java.lang.reflect.InvocationTargetException e) {
+            System.out.println("Test failed: Method threw an exception: ");
+            e.getCause().printStackTrace();
+        }
+        catch (Exception e) {
+            System.out.println("Reflection test failed: ");
+            e.printStackTrace();
+        }
+        System.out.println("\n");
     }
 
     //TEST CASE: FULL COMPLETED TEST
@@ -228,7 +281,7 @@ public class Main {
         System.out.println("FULL COMPLETED TEST");
         Question q1 = new MultipleChoice("Q1", "2 + 2 = ?", 10.0, Arrays.asList("A.1", "B.4", "C.3", "D.5"), "4");
         Question q2 = new TrueFalse("Q2", "1 + 1 = 2", 10.0, true);
-        Question q3 = new ShortAnswer("Q3", "What is the capital of VietNam", 10.0, "HaNoi");
+        Question q3 = new ShortAnswer("Q3", "What is the capital of VietNam?", 10.0, "Ha Noi");
         List<Question> questions = Arrays.asList(q1,q2,q3);
         
         final int timeLimitMinutes = 1;
@@ -295,12 +348,12 @@ public class Main {
                     Thread.sleep(20);
                 }
                 System.out.println("HET GIO. BAI THI TU DONG KET THUC");
-                System.out.println("Trang thai bai thi" + attempt.getState());
+                System.out.println("Trang thai bai thi " + attempt.getState());
             }
             else {
                 attempt.submit(quiz.getTimeLimit());
                 System.out.println("NOP BAI THANH CONG");
-                System.out.println("Trang thai bai thi" + attempt.getState());
+                System.out.println("Trang thai bai thi " + attempt.getState());
             }
             List<GradeResult> results = grader.gradeAttempt(attempt);
             grader.printScoreBreakdown(attempt, results);
@@ -314,5 +367,6 @@ public class Main {
         } catch (Exception e) {
             System.out.println("LOI TEST" + e.getMessage());
         }
+        System.out.println("\n");
     }
 }
