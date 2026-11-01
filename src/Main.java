@@ -31,9 +31,10 @@ public class Main {
             Question q1 = new MultipleChoice("Q1", "1 + 1 = ?", 10.0, Arrays.asList("1", "2", "3"), "2");
             Question q2 = new TrueFalse("Q2", "Trái đất hình tròn?", 10.0, true);
             Question q3 = new ShortAnswer("Q3", "Viết tắt của Object Oriented Programming?", 10.0, "OOP");
+            Question q4 = new FillInTheBlank("Q4", "Từ khóa để kế thừa trong Java là ___", 10.0, "extends");
 
             // 2. Tạo Quiz
-            Quiz quiz = new Quiz("QUIZ_01", "Bài test cơ bản", 60, Arrays.asList(q1, q2, q3)); //bài quiz này gồm 3 câu hỏi mới tạo trên
+            Quiz quiz = new Quiz("QUIZ_01", "Bài test cơ bản", 60, Arrays.asList(q1, q2, q3, q4)); //thêm q4 vào danh sách
             
             // 3. Tạo Attempt trống và Bắt đầu làm bài
             Map<String, String> emptyAnswers = new HashMap<>();
@@ -45,6 +46,7 @@ public class Main {
             attempt.answerQuestion("Q1", "2");
             attempt.answerQuestion("Q2", "true");
             attempt.answerQuestion("Q3", "OOP");
+            attempt.answerQuestion("Q4", "extends");
 
             // 5. Nộp bài
             attempt.submit(quiz.getTimeLimit());
@@ -77,7 +79,6 @@ public class Main {
         System.out.println("=> THÀNH CÔNG: Tính đóng gói và bảo vệ trạng thái hoạt động đúng!\n");
     }
 
-    // --- KỊCH BẢN 2.2: Nộp bài khi ĐÃ QUÁ GIỜ ---
     // --- KỊCH BẢN 2.2: Nộp bài khi ĐÃ QUÁ GIỜ ---
     System.out.println(">>> TEST CASE 2.2: VALIDATION ERROR (Bảo vệ thời gian làm bài)");
     try {
@@ -123,10 +124,12 @@ public class Main {
                 new MultipleChoice("Q1", "Thủ đô VN?", 10.0, Arrays.asList("Hà Nội", "Huế"), "Hà Nội"),
                 new TrueFalse("Q2", "Java là OOP?", 10.0, true),
                 new ShortAnswer("Q3", "Môn học tên gì?", 10.0, "Object Oriented Programming")
+                new FillInTheBlank("Q4", "SOLID chữ O viết tắt của ___", 10.0, "Open Closed")
             );
-
+            
             // Giả lập chuỗi đáp án (có cái đúng, cái sai, cái chứa khoảng trắng)
-            String[] studentAnswers = {"Hà Nội", "false", "  oBject Oriented pRogramming  "};
+            // Thêm một đáp án (cố tình viết hoa lộn xộn) vào mảng studentAnswers:
+            String[] studentAnswers = {"Hà Nội", "false", "  oBject Oriented pRogramming  ", " oPen CLoSed "};
 
             System.out.println("- Hệ thống tự động gọi đúng hàm grade() của từng class con:");
             for (int i = 0; i < questions.size(); i++) {
