@@ -42,7 +42,7 @@ public class QuizGrader {
 
             String answer = a.getAnswers().get(q.getId());
             if (answer == null || answer.trim().isEmpty()) {
-                System.out.printf("%s | Chưa trả lời | Score: %.2f / %.2f | Correct: No", q.getId(), result.getScoreAchieved(), result.getMaxPoints());
+                System.out.printf("%s | Chưa trả lời | Score: %.2f / %.2f | Correct: No%n", q.getId(), result.getScoreAchieved(), result.getMaxPoints());
             }
             else {
                 System.out.printf("%s | Score: %.2f / %.2f | Correct: %s%n", q.getId(), result.getScoreAchieved(), result.getMaxPoints(), result.isCorrect() ? "Yes" : "No");
