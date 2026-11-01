@@ -18,6 +18,9 @@ public class MultipleChoice extends Question {
     @Override
     public GradeResult grade(String studentAnswer) {
         // So sánh chuỗi có loại bỏ khoảng trắng (trim) và không phân biệt chữ hoa chữ thường
+        if (studentAnswer == null || studentAnswer.trim().isEmpty()) {
+            return new GradeResult(0, getPoints(), false);
+        }
         boolean isCorrect = studentAnswer.trim().equalsIgnoreCase(correctChoice.trim());
         double score = isCorrect ? getPoints() : 0;
         return new GradeResult(score, getPoints(), isCorrect);
