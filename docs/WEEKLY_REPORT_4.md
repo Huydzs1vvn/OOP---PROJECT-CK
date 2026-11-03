@@ -22,3 +22,12 @@ In addition to group deliverables, each member independently prepared 10 self-qu
 **`ShortAnswer` grading logic explanation**
 The ShortAnswer class implements a grading strategy that requires an exact match between the student's answer and the expected answer after trimming leading and trailing whitespace, while ignoring differences in uppercase and lowercase letters. Specifically, the grading logic uses trim() to remove unnecessary whitespace at the beginning and end of the student's answer and equalsIgnoreCase() to compare the answers without considering case sensitivity.
 For example, if the expected answer is "Object Oriented", the answers "Object Oriented", " object oriented ", and "OBJECT ORIENTED" are all considered correct. However, "Object-Oriented" is marked incorrect because the hyphen changes the actual content of the answer. This ensures that the grading process remains flexible regarding capitalization and unnecessary whitespace while still requiring the student to provide the exact expected answer.
+
+### Key Commits (Evidence of Work)
+To verify our incremental progress for Week 4, here are the direct links to our main milestone commits:
+
+* [Commit 4d1fef4](https://github.com/Huydzs1vvn/OOP---PROJECT-CK/commit/4d1fef4): Implement `FillInTheBlank` class to demonstrate the Open/Closed Principle (Extensibility Demo).
+* [Commit 4f1fcaa](https://github.com/Huydzs1vvn/OOP---PROJECT-CK/commit/4f1fcaa): Fix `NullPointerException` when student answers are null (Core Bug Fix).
+* [Commit 0255437](https://github.com/Huydzs1vvn/OOP---PROJECT-CK/commit/0255437): Add TestCase 6 (Short Answer Strategy) and TestCase 7 (Null Answer Reflection).
+* [Commit 7b55733](https://github.com/Huydzs1vvn/OOP---PROJECT-CK/commit/7b55733): Update Final UML diagram to perfectly match the implemented codebase.
+* [Commit 393c678](https://github.com/Huydzs1vvn/OOP---PROJECT-CK/commit/393c678): Finalize WEEKLY_REPORT_4 and ShortAnswer grading logic explanations.
