@@ -1,4 +1,4 @@
-**Week 1:**
+## WEEK 1:
 In our design, we strategically employed both inheritance and composition to build a flexible system.
 
 Inheritance: We used inheritance for the Question hierarchy (MultipleChoice, TrueFalse, ShortAnswer inheriting from the abstract Question class). This "IS-A" relationship is essential because it allows us to utilize polymorphism. By defining an abstract grade() method in the base class, the QuizGrader can evaluate any question type without needing to know its specific subclass, cleanly satisfying the Open/Closed principle.
@@ -10,7 +10,9 @@ Polymorphism & Abstract Classes: Crucial for implementing the grade() method acr
 Encapsulation: Necessary for managing the state of an Attempt (ensuring the time limit cannot be tampered with from the outside). This is exactly what I verified in Test Case 2 of our Test Plan
 Collections: Required for storing the list of questions within a Quiz and managing the questionOrder within an Attempt.
 
-**Week 2:**
+---
+
+## WEEK 2:
 
 ### 1. What Each Class Protects (Encapsulation & Invariants)
 In Week 2, I implemented the `Question` hierarchy (`Question`, `MultipleChoice`, `TrueFalse`, `ShortAnswer`), the `GradeResult` class, and the 3 core test scenarios in `Main.java`:
@@ -50,7 +52,9 @@ During Week 2 integration testing, we encountered a real bug caused by a mismatc
 All 3 required scenarios (Happy Path, Validation/Error State Protection, and Polymorphism without `if/else`) compiled and passed:
 ![Week 2 Test Output](test_output.png)
 
-**Week 3:**
+---
+
+## WEEK 3:
 
 ### 1. Refactoring & Custom Exceptions (Before/After)
 Previously, handling invalid submissions relied on generic exceptions or returning `false` via procedural `if/else` statements. I refactored this approach by implementing **Custom Exceptions** (`QuizNotStartedException` and `AttemptExpiredException`) to handle business logic edge cases explicitly.
@@ -76,7 +80,7 @@ public void submit(int timeLimitMinutes) {
 // Inside Attempt.java
 public void submit(int timeLimit) throws QuizNotStartedException, AttemptExpiredException {
     if (state != AttemptState.IN_PROGRESS) {
-        throw new QuizNotStartedException("Only submitted exams when you're in progress.");
+        throw new QuizNotStartedException("Chỉ được nộp bài khi đang trong quá trình làm bài.");
     }
     if (isExpired(timeLimit)) {
         this.state = AttemptState.EXPIRED;
@@ -103,3 +107,45 @@ To verify this encapsulation (specifically boundary values for timing), I implem
   - ![UML Diagram](../UML.png)
 - **Test Output:** Full verification of edge cases (Test 2.1 & 2.2) and the interactive threaded test (Full Completed Test) is documented in the test artifacts.
   - [View Test Output Log](./docs/test_output_week3.txt)
+ 
+---
+
+## WEEK 4: 
+
+### 1. Syllabus Mapping (OOP Principles Applied)
+| OOP Principle | Class / Method Applied | Self-Explanation |
+| :--- | :--- | :--- |
+| **Open/Closed Principle (OCP)** | `FillInTheBlank` class and `QuizGrader` system | The system was extended with a new question type (`FillInTheBlank`) by creating a new class extending `Question`. The core grading engine (`QuizGrader`) and the base class (`Question`) required absolutely **zero modifications**, proving the system is open for extension but closed for modification. |
+| **Polymorphism** | `grade(String answer)` in `FillInTheBlank` | Overrode the abstract `grade()` method from the parent class to define specific string-matching logic (trimming whitespace and ignoring case) for this particular question type. |
+| **Encapsulation** | `FillInTheBlank` constructor and `null` check | The `expectedAnswer` field is kept `private` to prevent unauthorized changes. Input state is validated immediately (`if (studentAnswer == null)`) within the method to protect the system from `NullPointerException` before executing the core logic. |
+| **Inheritance** | `FillInTheBlank extends Question` | Reused core attributes (`id`, `text`, `points`) from the parent class, maintaining an "IS-A" relationship that allows the `QuizGrader` to process it generically in a `List<Question>`. |
+
+### 2. 10 Q&A Pairs for Oral Defense
+1. **Q:** How is the Open/Closed Principle (OCP) demonstrated in Week 4?
+   **A:** I created the `FillInTheBlank` class extending `Question` and overrode `grade()`. Thanks to polymorphism, `QuizGrader` can evaluate this new type without me altering a single line of code in the core `QuizGrader` or `Question` classes.
+2. **Q:** How does `FillInTheBlank` protect data integrity (Encapsulation) against invalid inputs?
+   **A:** Inside the `grade()` method, I implemented a guard clause: `if (studentAnswer == null || studentAnswer.trim().isEmpty())`. This safely handles empty or null inputs (like when an attempt expires) and prevents runtime crashes.
+3. **Q:** Why is the `grade()` method in the `Question` class declared as `abstract`?
+   **A:** It forces all subclasses (like `FillInTheBlank`, `TrueFalse`) to provide their own specific grading implementation. This establishes the foundation for Polymorphism.
+4. **Q:** What edge case does using `.trim().equalsIgnoreCase(...)` in `FillInTheBlank` solve?
+   **A:** It handles scenarios where a student might accidentally add leading/trailing spaces or use inconsistent capitalization, ensuring the grading is fair and accurate.
+5. **Q:** Why use Inheritance for `FillInTheBlank` instead of Composition?
+   **A:** Because `FillInTheBlank` fundamentally "IS-A" `Question`. Inheritance allows it to be stored in a `List<Question>` and evaluated uniformly by the `QuizGrader` using polymorphism.
+6. **Q:** What would happen if `FillInTheBlank` didn't call `super(id, text, points)` in its constructor?
+   **A:** It would cause a compilation error. The parent class `Question` lacks a default (no-argument) constructor, so calling `super` is mandatory to initialize the encapsulated core attributes.
+7. **Q:** Why is the `expectedAnswer` attribute in `FillInTheBlank` marked as `private`?
+   **A:** To adhere to Encapsulation, ensuring that the correct answer cannot be externally modified or corrupted after the question object is instantiated.
+8. **Q:** How does `QuizGrader` calculate the total score without knowing the specific question types?
+   **A:** Through polymorphism. It simply calls the `grade()` method on each `Question` object. Each subclass returns a `GradeResult`, and `QuizGrader` just iterates and aggregates the scores.
+9. **Q:** If you wanted to add "partial credit" logic to `FillInTheBlank` later, where would you make the change?
+   **A:** Only inside the `grade()` method of the `FillInTheBlank` class. The rest of the system remains untouched, demonstrating high cohesion and loose coupling.
+10. **Q:** What is the benefit of returning a `GradeResult` object from `grade()` instead of just a `double` score?
+    **A:** It encapsulates multiple related data points (score achieved, max points, correctness status) into a single structure, making the code cleaner and easier to extend (e.g., adding feedback comments later).
+
+### 3. Personal Reflection
+In this final week, the primary challenge was maintaining the integrity of the existing codebase while integrating a new feature to satisfy the Open/Closed Principle. The biggest takeaway is the immense value of upfront design thinking. Because we designed `Question` as an abstract class and utilized polymorphic grading in `QuizGrader` during the earlier weeks, adding the `FillInTheBlank` type this week was seamless and didn't break the architecture. Collaborating with my teammate was also highly efficient due to clear role separation: I focused on feature extension (OCP), while my partner handled security patching (null checks) on legacy features.
+
+### 4. AI Usage Log
+* **Prompt Used:** "Create a `FillInTheBlank` class inheriting from `Question`, grading by matching strings case-insensitively and ignoring whitespace."
+* **Verification & Modification:** The AI initially suggested adding an `if/else` block inside `QuizGrader` to detect the new class. I rejected this (critique) and constrained the AI to only write logic inside the new `FillInTheBlank` file to strictly obey the Open/Closed Principle. I also manually added the `null` check at the start of the `grade()` method to prevent crashes during the expired-time test scenario.
+* **AI Critique:** AI is highly proficient at generating boilerplate code and string-manipulation logic. However, it tends to ignore deeper architectural principles (like OCP) in favor of the quickest solution unless explicitly guided by strict constraints in the prompt.
